@@ -69,7 +69,10 @@ export const updateBusiness = async (req, res) => {
     // update business
     const updatedInfo = { name, description, address, open, close, image, _id: id };
     const updatedBus = await Business.findByIdAndUpdate(id, updatedInfo, { new: true });
-    res.status(200).json(updatedBus);
+
+    // provide response
+    if(updatedBus) return res.status(200).json(updatedBus);
+    else return res.status(404).json({ message: `No business with id: ${id}` });
 };
 
 // ----- DELETE
@@ -96,6 +99,9 @@ export const deleteBusiness = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No business with id: ${id}` });
 
     // delete food item
-    await Business.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Business deleted successfully.' });
+    const deleted = await Business.findByIdAndDelete(id);
+
+    // provide response
+    if(deleted) return res.status(200).json({ message: 'Business deleted successfully.' });
+    else return res.status(404).json({ message: `No business with id: ${id}` });  
 }

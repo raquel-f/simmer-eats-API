@@ -74,8 +74,11 @@ export const deleteImage = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No image with id: ${id}` });
 
     // delete image
-    await Image.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Image deleted successfully.' });
+    const deleted = await Image.findByIdAndDelete(id);
+
+    // provide response
+    if(deleted) return res.status(200).json({ message: 'Image deleted successfully.' });
+    else return res.status(404).json({ message: `No image with id: ${id}` });  
 }
 
 // delete all images

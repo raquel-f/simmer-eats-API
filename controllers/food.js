@@ -69,7 +69,10 @@ export const updateFoodItem = async (req, res) => {
     // update food item
     const updatedInfo = { name, ingredients, price, skill, serving, notes, pack, image, owner, _id: id };
     const updatedItem = await FoodItem.findByIdAndUpdate(id, updatedInfo, { new: true });
-    res.status(200).json(updatedItem);
+    
+    // provide response
+    if(updatedItem) return res.status(200).json(updatedItem);
+    else return res.status(404).json({ message: `No food with id: ${id}` });
 };
 
 // ----- DELETE
@@ -96,6 +99,9 @@ export const deleteFoodItem = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No food with id: ${id}` });
 
     // delete food item
-    await FoodItem.findByIdAndDelete(id);
-    res.status(200).json({ message: 'Food deleted successfully.' });
+    const deleted = await FoodItem.findByIdAndDelete(id);
+    
+    // provide response
+    if(deleted) return res.status(200).json({ message: 'Food deleted successfully.' });
+    else return res.status(404).json({ message: `No food with id: ${id}` });  
 }

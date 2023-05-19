@@ -121,7 +121,10 @@ export const updateLoggedUser = async (req, res) => {
     // update user
     const updatedInfo = { name, email, password, confirmPassword, avatar, role, business, _id: id };
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
-    res.status(200).json(updatedUser);
+    
+    // provide response
+    if(updatedUser) res.status(200).json(updatedUser);
+    else return res.status(404).json({ message: `No user with id: ${id}` });
 }
 
 // update one user
@@ -136,7 +139,11 @@ export const updateUser = async (req, res) => {
     // update user
     const updatedInfo = { name, email, password, confirmPassword, avatar, role, business, _id: id };
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
-    res.status(200).json(updatedUser);
+
+    // provide response
+    if(updatedUser) res.status(200).json(updatedUser);
+    else return res.status(404).json({ message: `No user with id: ${id}` });
+    
 };
 
 // ----- DELETE
@@ -149,8 +156,11 @@ export const deleteLoggedUser = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
     // delete user
-    await User.findByIdAndDelete(id);
-    res.status(200).json({ message: 'User deleted successfully.' });
+    const deleted = await User.findByIdAndDelete(id);
+
+    // provide response
+    if(deleted) res.status(200).json({ message: 'User deleted successfully.' });
+    else return res.status(404).json({ message: `No user with id: ${id}` }); 
 }
 
 // delete all users
@@ -175,6 +185,9 @@ export const deleteUser = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
     // delete user
-    await User.findByIdAndDelete(id);
-    res.status(200).json({ message: 'User deleted successfully.' });
+    const deleted = await User.findByIdAndDelete(id);
+    
+    // provide response
+    if(deleted) res.status(200).json({ message: 'User deleted successfully.' });
+    else return res.status(404).json({ message: `No user with id: ${id}` }); 
 }
