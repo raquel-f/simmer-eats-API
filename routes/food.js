@@ -1,7 +1,7 @@
 import express from 'express';
 
 // controllers
-import { getAllFood, createFoodItem, deleteAllFood, deleteFoodItem, getFoodItem, updateFoodItem } from '../controllers/food.js';
+import { getAllFood, createFoodItem, deleteAllFood, deleteFoodItem, getFoodItem, updateFoodItem, getRestaurantFood } from '../controllers/food.js';
 
 // middleware
 import auth from '../middleware/auth.js';
@@ -15,6 +15,7 @@ const router = express.Router();
 // routes
 router.get('/', getAllFood);
 router.get('/:id', getFoodItem);
+router.get('/restaurant/:id', getRestaurantFood);
 
 router.post('/', createFoodItem);
 
