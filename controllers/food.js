@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 import FoodItem from "../models/foodItem.js";
+import { SERVINGS } from "../constants/index.js";
+
+const PRICING_MULTIPLIER = 0.85;
 
 // ----- handlers for food routes -----
 
@@ -41,7 +44,135 @@ export const getRestaurantFood = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const foodItems = await FoodItem.find({owner: id});
+        const foodItems = await FoodItem.find({ owner: id });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all vegetarian food
+export const getVegetarianFood = async (req, res) => {
+    try {
+        const foodItems = await FoodItem.find({ notes: 'Vegetarian' });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all lactose free food
+export const getLactoseFreeFood = async (req, res) => {
+    try {
+        const foodItems = await FoodItem.find({ notes: 'Lactose Free' });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all food that has a single serving portion 
+export const getSingleFood = async (req, res) => {
+    try {
+        const foodItems = await FoodItem.find({ serving: SERVINGS.Single });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all food that has a family serving portion 
+export const getFamilyFood = async (req, res) => {
+    try {
+        const foodItems = await FoodItem.find({ serving: SERVINGS.Family });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all food that has a party serving portion 
+export const getPartyFood = async (req, res) => {
+    try {
+        const foodItems = await FoodItem.find({ serving: SERVINGS.Party });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all food with budget pricing
+export const getBudgetFood = async (req, res) => {
+    try {
+        // calculate average price of food (minumum -> single serving portion)
+        const averagePrice = await FoodItem.aggregate([
+            { $match: { "serving.0": SERVINGS.Single  } },
+            {
+                $group: {
+                    _id: null,
+                    minPriceAvg: { $avg: { $first: "$price" } }
+                }
+            }
+        ]);
+
+        // calculate budget pricing threshold
+        const budgetPrice = averagePrice[0].minPriceAvg * PRICING_MULTIPLIER;
+
+        // find food with pricing less than or equal to the threshold
+        const foodItems = await FoodItem.find({ "price.0": { $lte: budgetPrice } });
+
+        // no error, send response
+        res.status(200).json(foodItems);
+
+    } catch (error) {
+        // send error
+        res.status(404).json({ message: error.message });
+    }
+}
+
+// get all food with premium pricing
+export const getPremiumFood = async (req, res) => {
+    try {
+        // calculate average price of food (maximum -> party serving portion)
+        const averagePrice = await FoodItem.aggregate([
+            { $match: { serving: SERVINGS.Party  } },
+            {
+                $group: {
+                    _id: null,
+                    maxPriceAvg: { $avg: { $last: "$price" } }
+                }
+            }
+        ]);
+
+        // calculate premium pricing threshold
+        const premiumPrice = averagePrice[0].maxPriceAvg * PRICING_MULTIPLIER;
+
+        // find food with pricing greater than or equal to the threshold
+        const foodItems = await FoodItem.find({ "price.0": { $gte: premiumPrice } });
 
         // no error, send response
         res.status(200).json(foodItems);
