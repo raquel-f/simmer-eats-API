@@ -9,6 +9,7 @@ import foodRoutes from './routes/food.js';
 import userRoutes from './routes/user.js';
 import imageRoutes from './routes/image.js';
 import businessRoutes from './routes/business.js';
+import cartRoutes from './routes/cart.js';
 
 // init app
 dotenv.config();
@@ -33,3 +34,4 @@ app.use('/food', foodRoutes);
 app.use('/user', userRoutes);
 app.use('/image', imageRoutes);
 app.use('/business', businessRoutes);
+app.use('/cart', cartRoutes);

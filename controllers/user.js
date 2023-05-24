@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user.js';
+import ShoppingCart from '../models/cart.js';
 import mongoose from 'mongoose';
 
 // ----- handlers for user routes -----
@@ -99,6 +100,11 @@ export const signUp = async (req, res) => {
         // create user
         const newUser = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
         const token = jwt.sign({ email: newUser.email, id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // create shopping cart for new user
+        const newCart = new ShoppingCart({ user: newUser._id });
+        newCart.save();
+
         res.status(201).json({ user: newUser, token });
 
     } catch (error) {
@@ -121,9 +127,9 @@ export const updateLoggedUser = async (req, res) => {
     // update user
     const updatedInfo = { name, email, password, confirmPassword, avatar, role, business, _id: id };
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
-    
+
     // provide response
-    if(updatedUser) res.status(200).json(updatedUser);
+    if (updatedUser) res.status(200).json(updatedUser);
     else return res.status(404).json({ message: `No user with id: ${id}` });
 }
 
@@ -141,9 +147,9 @@ export const updateUser = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
 
     // provide response
-    if(updatedUser) res.status(200).json(updatedUser);
+    if (updatedUser) res.status(200).json(updatedUser);
     else return res.status(404).json({ message: `No user with id: ${id}` });
-    
+
 };
 
 // ----- DELETE
@@ -155,18 +161,22 @@ export const deleteLoggedUser = async (req, res) => {
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
+    // delete user's shopping cart
+    const deletedUserCart = await ShoppingCart.findOneAndDelete({ user: id });
+
     // delete user
     const deleted = await User.findByIdAndDelete(id);
 
     // provide response
-    if(deleted) res.status(200).json({ message: 'User deleted successfully.' });
-    else return res.status(404).json({ message: `No user with id: ${id}` }); 
+    if (deletedUserCart && deleted) res.status(200).json({ message: 'User deleted successfully.' });
+    else return res.status(404).json({ message: `No user with id: ${id}` });
 }
 
 // delete all users
 export const deleteAllUsers = async (req, res) => {
     try {
         await User.deleteMany();
+        await ShoppingCart.deleteMany();
 
         // no error, send response
         res.status(200).json({ message: 'All users deleted successfully.' });
@@ -184,10 +194,13 @@ export const deleteUser = async (req, res) => {
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
+    // delete user's shopping cart
+    const deletedUserCart = await ShoppingCart.findOneAndDelete({ user: id });
+
     // delete user
     const deleted = await User.findByIdAndDelete(id);
-    
+
     // provide response
-    if(deleted) res.status(200).json({ message: 'User deleted successfully.' });
-    else return res.status(404).json({ message: `No user with id: ${id}` }); 
+    if (deletedUserCart && deleted) res.status(200).json({ message: 'User deleted successfully.' });
+    else return res.status(404).json({ message: `No user with id: ${id}` });
 }
