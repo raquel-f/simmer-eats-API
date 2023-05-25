@@ -2,6 +2,7 @@ import express from 'express';
 
 // controllers
 import {
+    addProductLoggedCart,
     createCart,
     deleteAllCarts,
     deleteCart,
@@ -9,6 +10,7 @@ import {
     getCart,
     getLoggedUserCart,
     getUserCart,
+    removeProductLoggedCart,
     updateCart,
     updateLoggedCart
 } from '../controllers/cart.js';
@@ -31,6 +33,8 @@ router.get('/:id', getCart);
 router.post('/', createCart);
 
 router.patch('/me', auth, updateLoggedCart);
+router.patch('/me/add', auth, addProductLoggedCart);
+router.patch('/me/remove', auth, removeProductLoggedCart);
 router.patch('/:id', updateCart);
 
 router.delete('/', deleteAllCarts);

@@ -123,6 +123,43 @@ export const updateLoggedCart = async (req, res) => {
     else return res.status(404).json({ message: `No shopping cart found for user with id: ${userId}` });
 };
 
+// add product to logged user's shopping cart
+export const addProductLoggedCart = async (req, res) => {
+    // get information from request
+    const userId = req.userId;
+    const { product, quantity, serving, totalPrice } = req.body;
+
+    // if invalid id, send error
+    if (!mongoose.Types.ObjectId.isValid(userId)) return res.status(404).json({ message: `No user with id: ${userId}` });
+    if (!mongoose.Types.ObjectId.isValid(product)) return res.status(404).json({ message: `No food with id: ${product}` });
+
+    // update shopping cart (add product)
+    const updatedInfo = { product, quantity, serving, totalPrice };
+    const updatedCart = await ShoppingCart.findOneAndUpdate({ user: userId }, { $push: { products: updatedInfo } }, { new: true });
+
+    // provide response
+    if (updatedCart) return res.status(200).json(updatedCart);
+    else return res.status(404).json({ message: `No shopping cart found for user with id: ${userId}` });
+}
+
+// remove product from logged user's shopping cart
+export const removeProductLoggedCart = async (req, res) => {
+    // get information from request
+    const userId = req.userId;
+    const { productId } = req.body;
+
+    // if invalid id, send error
+    if (!mongoose.Types.ObjectId.isValid(userId)) return res.status(404).json({ message: `No user with id: ${userId}` });
+    if (!mongoose.Types.ObjectId.isValid(productId)) return res.status(404).json({ message: `No food with id: ${productId}` });
+
+    // update shopping cart (remove product)
+    const updatedCart = await ShoppingCart.findOneAndUpdate({ user: userId }, { $pull: { products: { product: productId } } }, { new: true });
+
+    // provide response
+    if (updatedCart) return res.status(200).json(updatedCart);
+    else return res.status(404).json({ message: `No shopping cart found for user with id: ${userId}` });
+}
+
 
 // ----- DELETE
 
