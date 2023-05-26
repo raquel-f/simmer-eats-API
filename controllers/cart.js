@@ -150,10 +150,10 @@ export const removeProductLoggedCart = async (req, res) => {
 
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(userId)) return res.status(404).json({ message: `No user with id: ${userId}` });
-    if (!mongoose.Types.ObjectId.isValid(productId)) return res.status(404).json({ message: `No food with id: ${productId}` });
+    if (!mongoose.Types.ObjectId.isValid(productId)) return res.status(404).json({ message: `No food item in cart with id: ${productId}` });
 
     // update shopping cart (remove product)
-    const updatedCart = await ShoppingCart.findOneAndUpdate({ user: userId }, { $pull: { products: { product: productId } } }, { new: true });
+    const updatedCart = await ShoppingCart.findOneAndUpdate({ user: userId }, { $pull: { products: { _id: productId } } }, { new: true });
 
     // provide response
     if (updatedCart) return res.status(200).json(updatedCart);
