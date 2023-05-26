@@ -83,7 +83,7 @@ export const signIn = async (req, res) => {
 
 // create user account
 export const signUp = async (req, res) => {
-    const { email, password, confirmPassword, firstName, lastName } = req.body;
+    const { email, password, confirmPassword, firstName, lastName, image } = req.body;
 
     try {
         const existingUser = await User.findOne({ email });
@@ -98,7 +98,7 @@ export const signUp = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 12);
 
         // create user
-        const newUser = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
+        const newUser = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}`, image });
         const token = jwt.sign({ email: newUser.email, id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         // create shopping cart for new user
@@ -119,13 +119,19 @@ export const signUp = async (req, res) => {
 export const updateLoggedUser = async (req, res) => {
     // get information from request
     const id = req.userId;
-    const { name, email, password, confirmPassword, avatar, role, business } = req.body;
+    const { name, password, confirmPassword, image, role, business } = req.body;
 
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
+    // if password and password confirmation do not match, send error
+    if (password !== confirmPassword) return res.status(400).json({ message: 'Passwords do not match.' });
+
+    // hash new password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
     // update user
-    const updatedInfo = { name, email, password, confirmPassword, avatar, role, business, _id: id };
+    const updatedInfo = { name, password: hashedPassword, image, role, business, _id: id };
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
 
     // provide response
@@ -137,13 +143,13 @@ export const updateLoggedUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     // get information from request
     const { id } = req.params;
-    const { name, email, password, confirmPassword, avatar, role, business } = req.body;
+    const { name, email, image, role, business } = req.body;
 
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No user with id: ${id}` });
 
     // update user
-    const updatedInfo = { name, email, password, confirmPassword, avatar, role, business, _id: id };
+    const updatedInfo = { name, email, image, role, business, _id: id };
     const updatedUser = await User.findByIdAndUpdate(id, updatedInfo, { new: true });
 
     // provide response
