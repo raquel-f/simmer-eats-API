@@ -10,6 +10,7 @@ import userRoutes from './routes/user.js';
 import imageRoutes from './routes/image.js';
 import businessRoutes from './routes/business.js';
 import cartRoutes from './routes/cart.js';
+import stripeRoutes from './routes/stripe.js';
 
 // init app
 dotenv.config();
@@ -35,3 +36,4 @@ app.use('/user', userRoutes);
 app.use('/image', imageRoutes);
 app.use('/business', businessRoutes);
 app.use('/cart', cartRoutes);
+app.use('/stripe', stripeRoutes);
