@@ -18,8 +18,8 @@ import { roleAdmin, roleBusiness } from '../middleware/role.js';
 const router = express.Router();
 
 // routes
-router.get('/', [auth, roleAdmin], getAllBusiness);
-router.get('/:id', [auth, roleBusiness], getBusiness);
+router.get('/', getAllBusiness);
+router.get('/:id', getBusiness);
 
 router.post('/', [auth, roleBusiness], createBusiness);
 
