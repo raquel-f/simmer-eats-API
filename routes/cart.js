@@ -17,28 +17,26 @@ import {
 
 // middleware
 import auth from '../middleware/auth.js';
-import { roleAdmin, roleBusiness } from '../middleware/role.js';
+import { roleAdmin } from '../middleware/role.js';
 
 // setup router
 const router = express.Router();
 
-// TODO: FIX MIDDLEWARE
-
 // routes
-router.get('/', getAllCarts);
+router.get('/', [auth, roleAdmin], getAllCarts);
 router.get('/me', auth, getLoggedUserCart);
-router.get('/user/:id', getUserCart);
-router.get('/:id', getCart);
+router.get('/user/:id', [auth, roleAdmin], getUserCart);
+router.get('/:id', [auth, roleAdmin], getCart);
 
-router.post('/', createCart);
+router.post('/', [auth, roleAdmin], createCart);
 
 router.patch('/me', auth, updateLoggedCart);
 router.patch('/me/add', auth, addProductLoggedCart);
 router.patch('/me/remove', auth, removeProductLoggedCart);
-router.patch('/:id', updateCart);
+router.patch('/:id', [auth, roleAdmin], updateCart);
 
-router.delete('/', deleteAllCarts);
-router.delete('/:id', deleteCart);
+router.delete('/', [auth, roleAdmin], deleteAllCarts);
+router.delete('/:id', [auth, roleAdmin], deleteCart);
 
 
 export default router;

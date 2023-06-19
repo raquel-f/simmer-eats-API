@@ -10,10 +10,8 @@ import { roleAdmin, roleBusiness } from '../middleware/role.js';
 // setup router
 const router = express.Router();
 
-// TODO: FIX MIDDLEWARE
-
 // routes
-router.post('/createCheckout', createCheckout);
+router.post('/createCheckout', auth, createCheckout);
 
 
 export default router;
