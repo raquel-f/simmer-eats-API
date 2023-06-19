@@ -5,7 +5,6 @@ import { createCheckout } from '../controllers/stripe.js';
 
 // middleware
 import auth from '../middleware/auth.js';
-import { roleAdmin, roleBusiness } from '../middleware/role.js';
 
 // setup router
 const router = express.Router();
