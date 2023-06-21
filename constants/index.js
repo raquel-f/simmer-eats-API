@@ -9,3 +9,12 @@ export const SERVINGS = {
     Family: 'SERVING_FAMILY',
     Party: 'SERVING_PARTY'
 }
+
+export const DELIVERY_STATUS = {
+    Pending: 'STATUS_PENDING',
+    Confirmed: 'STATUS_CONFIRMED',
+    Canceled: 'STATUS_CANCELED',
+    Shipped: 'STATUS_SHIPPED',
+    Transit: 'STATUS_TRANSIT',
+    Complete: 'STATUS_COMPLETE'
+}

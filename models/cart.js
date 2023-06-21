@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { SERVINGS } from '../constants/index.js';
 
-const cartItemSchema = mongoose.Schema({
+export const ItemSchema = mongoose.Schema({
     product: { type: mongoose.Types.ObjectId, ref: 'Food', required: true },
     quantity: { type: Number, required: true },
     serving: { type: String, enum: [SERVINGS.Single, SERVINGS.Family, SERVINGS.Party], required: true },
@@ -9,9 +9,10 @@ const cartItemSchema = mongoose.Schema({
 });
 
 const cartSchema = mongoose.Schema({
-    products: { type: [cartItemSchema] },
+    products: { type: [ItemSchema] },
     user: { type: mongoose.Types.ObjectId, ref: 'User', required: true },
-    lastUpdated: { type: Date, default: Date.now() }
+    lastUpdated: { type: Date, default: Date.now() },
+    stripeCheckoutID: { type: String, required: false }
 });
 
 const ShoppingCart = mongoose.model('ShoppingCart', cartSchema);

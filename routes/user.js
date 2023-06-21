@@ -1,14 +1,25 @@
 import express from 'express';
 
 // controllers
-import { deleteAllUsers, deleteLoggedUser, deleteUser, getAllUsers, getLoggedUser, getUser, signIn, signUp, updateLoggedUser, updateUser } from '../controllers/user.js';
+import {
+    deleteAllUsers,
+    deleteLoggedUser,
+    deleteUser,
+    getAllUsers,
+    getLoggedUser,
+    getUser,
+    signIn,
+    signUp,
+    updateLoggedUser,
+    updateUser
+} from '../controllers/user.js';
+
+// middleware
 import auth from '../middleware/auth.js';
 import { roleAdmin } from '../middleware/role.js';
 
 // setup router
 const router = express.Router();
-
-// TODO: FIX MIDDLEWARE
 
 // routes
 router.get('/me', auth, getLoggedUser);
@@ -22,7 +33,7 @@ router.patch('/me', auth, updateLoggedUser);
 router.patch('/:id', [auth, roleAdmin], updateUser);
 
 router.delete('/me', auth, deleteLoggedUser);
-router.delete('/', deleteAllUsers);
-router.delete('/:id', deleteUser);
+router.delete('/', [auth, roleAdmin], deleteAllUsers);
+router.delete('/:id', [auth, roleAdmin], deleteUser);
 
 export default router;
