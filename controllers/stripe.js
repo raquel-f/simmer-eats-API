@@ -43,7 +43,6 @@ const handleCheckoutSessionCompleted = async (session) => {
 // update delivery status when payment is received
 const handleReceivedPayment = async (payment) => {
     const paymentID = payment.id;
-    console.log("payment ID: ", paymentID);
 
     // simulate payment delay
     await stall(5000);
@@ -92,7 +91,7 @@ export const createCheckout = async (req, res) => {
             line_items: lineItems,
             mode: 'payment',
             // TODO CHANGE
-            success_url: 'http://localhost:3000/',
+            success_url: 'http://localhost:3000/delivery?from=stripe',
             cancel_url: 'http://localhost:3000/cart'
         });
 

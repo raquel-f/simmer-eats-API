@@ -12,6 +12,7 @@ import businessRoutes from './routes/business.js';
 import cartRoutes from './routes/cart.js';
 import stripeRoutes from './routes/stripe.js';
 import webhookRoutes from './routes/webhook.js';
+import deliveryRoutes from './routes/delivery.js';
 
 // init app
 dotenv.config();
@@ -39,3 +40,4 @@ app.use('/image', imageRoutes);
 app.use('/business', businessRoutes);
 app.use('/cart', cartRoutes);
 app.use('/stripe', stripeRoutes); 
+app.use('/delivery', deliveryRoutes);
