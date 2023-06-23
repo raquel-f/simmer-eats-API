@@ -19,8 +19,6 @@ import { roleAdmin } from '../middleware/role.js';
 // setup router
 const router = express.Router();
 
-// TODO: FIX MIDDLEWARE
-
 // routes
 router.get('/', [auth, roleAdmin], getAllDeliveries);
 router.get('/me', auth, getLoggedUserDeliveries);
@@ -29,7 +27,7 @@ router.get('/:id', auth, getDelivery);
 
 router.post('/', [auth, roleAdmin], createDelivery);
 
-router.patch('/:id', /* [auth, roleAdmin], */ updateDelivery);
+router.patch('/:id', [auth, roleAdmin], updateDelivery);
 
 router.delete('/', [auth, roleAdmin], deleteAllDeliveries);
 router.delete('/:id', [auth, roleAdmin], deleteDelivery);
