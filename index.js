@@ -16,7 +16,7 @@ import deliveryRoutes from './routes/delivery.js';
 
 // init app
 dotenv.config();
-const app = express();
+export const app = express();
 
 // app setup
 app.use(cors());
