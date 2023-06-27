@@ -90,8 +90,8 @@ export const createCheckout = async (req, res) => {
         const session = await stripe.checkout.sessions.create({
             line_items: lineItems,
             mode: 'payment',
-            success_url: 'http://localhost:3000/delivery?from=stripe',
-            cancel_url: 'http://localhost:3000/cart'
+            success_url: 'https://simmer-eats.vercel.app/delivery?from=stripe',
+            cancel_url: 'https://simmer-eats.vercel.app/cart'
         });
 
         // update shopping cart with checkout session ID
