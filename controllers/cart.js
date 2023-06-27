@@ -184,7 +184,7 @@ export const deleteCart = async (req, res) => {
     // if invalid id, send error
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ message: `No shopping cart with id: ${id}` });
 
-    // delete food item
+    // delete shopping cart
     const deleted = await ShoppingCart.findByIdAndDelete(id);
 
     // provide response
