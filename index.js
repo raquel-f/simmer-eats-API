@@ -16,7 +16,7 @@ import deliveryRoutes from './routes/delivery.js';
 
 // init app
 dotenv.config();
-export const app = express();
+const app = express();
 
 // app setup
 app.use(cors());
@@ -41,3 +41,5 @@ app.use('/business', businessRoutes);
 app.use('/cart', cartRoutes);
 app.use('/stripe', stripeRoutes); 
 app.use('/delivery', deliveryRoutes);
+
+export default app;
